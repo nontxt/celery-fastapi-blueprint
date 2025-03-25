@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: fastapi_app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - worker
+    networks:
+      - celery-network
+
+  redis:
+    image: redis:alpine
+    container_name: celery-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - celery-network
+
+  worker:
+    image: celery_worker:latest
+    container_name: celery-worker
+    command: celery -A celery_app worker --loglevel=info --concurrency=5
+    depends_on:
+      - redis
+    networks:
+      - celery-network
+
+  periodic:
+    image: celery_worker:latest
+
+    container_name: celery-periodic-worker
+    command: celery -A celery_app worker --loglevel=info --concurrency=5 -Q periodic -n periodic@%h
+    depends_on:
+      - redis
+    networks:
+      - celery-network
+
+  beat:
+    build: .
+    container_name: celery-beat
+    command: celery -A celery_app beat --loglevel=info
+
+    depends_on:
+      - redis
+      - periodic
+    networks:
+      - celery-network
+
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile.flower
+    container_name: flower
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+      - worker
+      - periodic
+      - beat
+    networks:
+      - celery-network
+
+networks:
+  celery-network:
+    external: true
+    driver: bridge
+
