@@ -31,7 +31,7 @@ celery_app.conf.beat_schedule = {
     # },
     "every-10-seconds": {  # Name of the task / label
         "task": "app.tasks.example.scheduled_task",
-        "schedule": 1.0,  # Every 10 seconds
+        "schedule": 10.0,  # Every 10 seconds
     },
 }
 
