@@ -24,6 +24,7 @@ WAIT_TIME = int(os.getenv("WAIT_TIME", 10))
 DOCKER_IMAGE = os.getenv("WORKER_DOCKER_IMAGE", "celery_worker:latest")
 NETWORK_NAME = os.getenv("DOCKER_NETWORK", "celery-network")
 WORKER_PREFIX = "celery-worker"
+WORKER_CONCURRENCY = 5
 
 redis_client = redis.Redis.from_url(REDIS_URL)
 
@@ -59,7 +60,7 @@ def run_worker_container():
             "celery_app.celery",
             "worker",
             "--loglevel=info",
-            "--concurrency=5",
+            f"--concurrency={WORKER_CONCURRENCY}",
             "-n",
             f"{worker_name}",
         ]
