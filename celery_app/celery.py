@@ -22,9 +22,7 @@ celery_app.conf.update(
     timezone="UTC",
     enable_utc=True,
     result_expires=300,  # 5 min expiration time for results
-    result_backend_transport_options={
-        "visibility_timeout": 300
-    },  # 5 min visibility timeout for
+    result_backend_transport_options={"visibility_timeout": 300},  # 5 min visibility timeout for
 )
 
 # https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html#entries
