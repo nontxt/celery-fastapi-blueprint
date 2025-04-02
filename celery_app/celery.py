@@ -21,6 +21,10 @@ celery_app.conf.update(
     accept_content=["json"],
     timezone="UTC",
     enable_utc=True,
+    result_expires=300,  # 5 min expiration time for results
+    result_backend_transport_options={
+        "visibility_timeout": 300
+    },  # 5 min visibility timeout for
 )
 
 # https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html#entries
@@ -29,10 +33,10 @@ celery_app.conf.beat_schedule = {
     #     "task": "app.tasks.example.scheduled_task",
     #     "schedule": crontab(minute="*/1"),  # Every 1 minutes
     # },
-    "every-10-seconds": {  # Name of the task / label
-        "task": "app.tasks.example.scheduled_task",
-        "schedule": 10.0,  # Every 10 seconds
-    },
+    # "every-10-seconds": {  # Name of the task / label
+    #     "task": "app.tasks.example.scheduled_task",
+    #     "schedule": 10.0,  # Every 10 seconds
+    # },
 }
 
 # https://docs.celeryq.dev/en/stable/userguide/configuration.html#task-routes

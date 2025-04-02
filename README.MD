@@ -19,11 +19,14 @@
 `docker logs -f celery_worker`
 
 ## Send task via FastAPI
-`curl -X POST http://localhost:8000/tasks/run-task/`
+`curl -X POST http://localhost:8000/tasks/run-task`
 
 ## Load test
-`for i in {1..50}; do curl -X POST http://localhost:8000/tasks/run-task/; done`
+`for i in {1..50}; do curl -X POST http://localhost:8000/tasks/run-task; done`
 
+## Send group task via FastAPI
+`curl -X POST http://localhost:8000/tasks/run-group`
+`curl -X POST http://localhost:8000/tasks/run-group?raise_error=true`
 
 # Setup daemon
 
